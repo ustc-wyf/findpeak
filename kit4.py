@@ -173,7 +173,7 @@ def findpeakl(data, zp, noise, bottom, top, r):
                 v=abs(a/((bottom+width*k-miu)*(bottom+width*k-miu)+gama2))
                 sum1=sum1+(v-absdata[k])*(v-absdata[k])
             sum1=sum1/(tempto-tempbo+1)
-            if amplitude>noise*r:
+            if amplitude/gama2>noise*r:
                 peak.append([gama2,miu,amplitude,sum1,tempbo,tempto])
             for k in range(length):
                 absdata[k]=abs(absdata[k]-amplitude/((bottom+width*k-miu)*(bottom+width*k-miu)+gama2))

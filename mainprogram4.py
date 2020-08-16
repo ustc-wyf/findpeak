@@ -24,7 +24,7 @@ r=float(input("input the signal to noise ratio(reference value: 1.5~2)\n"))
 """denoise"""
 flagd=input("Do you want to denoise?(which may generate distortion of your peak)\nYes: 1, No: 0\n")
 if flagd=='1':
-    w=float(input("input the cut-off frequency(Tip: 0~2*Pi, best not below 0.2):\n"))
+    w=float(input("input the cut-off frequency(Tip: 0<w<1, reference value: 0.2~0.3):\n"))
     fourierb,fouriera=signal.butter(4,w,'low')
     sf=signal.filtfilt(fourierb,fouriera,data)
     myplot.p1(data,0,len(data)-1)
@@ -45,15 +45,15 @@ if flag1 == '1':
     ze=[]
     for i in range(50):
         ze.append(0)
-    zp1=kit4.findpeakg(density,ze,mden/5,mi,ma,1)
-    zp2=kit4.findpeakl(density,ze,mden/5,mi,ma,1)
+    zp1=kit4.findpeakg(density,ze,mden/10,mi,ma,1)
+    zp2=kit4.findpeakl(density,ze,mden/10,mi,ma,1)
     print(zp1,zp2)
     noise=2.58*zp1[0][0]#a point outside zp+-noise is ?% not because of a noise fluctuation
 #68.27%--1sigema, 95%--1.96sigema, 99%--2.58sigema
     zp=zp1[0][1]
     for i in range(length):
         zeroline.append(zp)
-    print("zeropoint:%f, noise:%f"%(zp,noise))
+    print("\n\n\nzeropoint:%f, noise:%f\n\n\n"%(zp,noise))
 elif flag1 =='2':
     i=0
     tempx=[]
@@ -85,14 +85,14 @@ elif flag1 =='2':
     ze=[]
     for i in range(50):
         ze.append(0)
-    devzp1=kit4.findpeakg(devdensity,ze,devmden/5,devmi,devma,1)
-    devzp2=kit4.findpeakl(devdensity,ze,devmden/5,devmi,devma,1)
+    devzp1=kit4.findpeakg(devdensity,ze,devmden/10,devmi,devma,1)
+    devzp2=kit4.findpeakl(devdensity,ze,devmden/10,devmi,devma,1)
     noise=2.58*devzp1[0][0]#a point outside zp+-noise is ?% not because of a noise fluctuation
 #68.27%--1sigema, 95%--1.96sigema, 99%--2.58sigema
     myplot.p1(data,bottom,top)
     plt.plot(x,zeroline,label='zero line')
     plt.show()
-    print("nosie:%f"%noise)
+    print("\n\n\nnosie:%f\n\n\n"%noise)
 elif flag1 =='3':
     zp=float(input("input zero point\n"))
     noise=float(input("input noise\n"))
@@ -107,6 +107,12 @@ p1=kit4.findpeakg(data,zeroline,noise,bottom,top,r)
 p2=kit4.findpeakl(data,zeroline,noise,bottom,top,r)
 m=len(p1)
 n=len(p2)
+if flag1=='1':
+    print("\n\n\nzeropoint:%f, noise:%f\n\n\n"%(zp,noise))
+elif flag1=='2':
+    print("\n\n\nnosie:%f\n\n\n"%noise)
+else:
+    print("\n\n\nzeropoint:%f, noise:%f\n\n\n"%(zp,noise))
 for i in range(m):
     tempbo=p1[i][4]
     tempto=p1[i][5]
