@@ -1,0 +1,33 @@
+20200610-180321：
+snr: 1~2
+denoise: no#denoise will decrease the noise, which means you must increase the snr or there will be many "peaks".
+find zeroline and noise method:1
+
+20200615-133339:
+snr: 2
+denoise: no
+find zeroline and noise method:1
+
+20200714-124511:
+snr:2
+denoise: yes
+cut-off frequency: 0.2
+find zeroline and noise method:1
+###you can try:
+find zeroline and noise method:2
+interval 1: 2669000000~2686000000
+interval 2: 2699000000~2709000000
+input '+' to the next step
+degree of polynomial:2
+
+20200714-173858:
+snr: 2
+denoise: yes
+cut-off frequency: 0.2
+find zeroline and noise method:2
+interval 1: 1997000000~2516000000
+interval 2: 2533000000~2615000000
+interval 3: 2715000000~2844000000
+interval 4: 2924000000~3001000000
+input '+' to the next step
+degree of polynomial:5
