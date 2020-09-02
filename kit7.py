@@ -87,7 +87,7 @@ def findpeakg(data, zp, noise, bottom, top, r):
                     if absdata[i]>tempmax:
                         tempmax=absdata[i]
                         inma=i
-                    elif absdata[i]<tempmax-noise:
+                    elif absdata[i]<tempmax-noise*r:
                         direction=0
                         fm[fsnum-1].append([inma,inmi])
                         tempmin=absdata[i]
@@ -97,7 +97,7 @@ def findpeakg(data, zp, noise, bottom, top, r):
                     if absdata[i]<tempmin:
                         tempmin=absdata[i]
                         inmi=i
-                    elif absdata[i]>tempmin+noise:
+                    elif absdata[i]>tempmin+noise*r:
                         direction=1
                         tempmax=absdata[i]
                         inma=i
@@ -121,18 +121,18 @@ def findpeakg(data, zp, noise, bottom, top, r):
         sigma0=math.sqrt((width*(fm[i][j][0]-fm[i][j][1]))**2/(2*math.log(absdata[fm[i][j][0]]/absdata[fm[i][j][1]])))
         pars['g%i_center'%(j+1)].set(value=bottom+width*fm[i][j][0],min=fsec[i][0],max=fsec[i][-1])
         pars['g%i_sigma'%(j+1)].set(value=sigma0,min=sigma0/20,max=sigma0*20)
-        pars['g%i_amplitude'%(j+1)].set(value=absdata[fm[i][j][0]]/0.3989423*sigma0,min=noise*r,max=absdata[fm[i][j][0]]*20/0.3989423*sigma0)
+        pars['g%i_amplitude'%(j+1)].set(value=absdata[fm[i][j][0]]/0.3989423*sigma0,min=noise*r/0.3989423*sigma0,max=absdata[fm[i][j][0]]*20/0.3989423*sigma0)
         for j in range(1,fnum[i]):
             mod=mod+GaussianModel(prefix='g%i_'%(j+1))
             pars.update(GaussianModel(prefix='g%i_'%(j+1)).make_params())
             sigma0=math.sqrt((width*(fm[i][j][0]-fm[i][j][1]))**2/(2*math.log(absdata[fm[i][j][0]]/absdata[fm[i][j][1]])))
             pars['g%i_center'%(j+1)].set(value=bottom+width*fm[i][j][0],min=fsec[i][0],max=fsec[i][-1])
             pars['g%i_sigma'%(j+1)].set(value=sigma0,min=sigma0/20,max=sigma0*20)
-            pars['g%i_amplitude'%(j+1)].set(value=absdata[fm[i][j][0]]/0.3989423*sigma0,min=noise*r,max=absdata[fm[i][j][0]]*20/0.3989423*sigma0)
+            pars['g%i_amplitude'%(j+1)].set(value=absdata[fm[i][j][0]]/0.3989423*sigma0,min=noise*r/0.3989423*sigma0,max=absdata[fm[i][j][0]]*20/0.3989423*sigma0)
         result=mod.fit(fdata[i],pars,x=fsec[i])
         print(result.fit_report())
-        plt.plot(fsec[i],fdata[i],'bo')
-        plt.plot(fsec[i],result.best_fit,'r-')
+        plt.plot(fsec[i],fdata[i],'bo',label='original')
+        plt.plot(fsec[i],result.best_fit,'r-',label='fitting')
         plt.show()
         tempbo=int((fsec[i][0]-bottom)/width)
         tempto=int((fsec[i][-1]-bottom)/width)
@@ -149,14 +149,14 @@ def findpeakg(data, zp, noise, bottom, top, r):
     return peak
 
 def findpeakl(data, zp, noise, bottom, top, r):
-    """findpeakg can find domain of a peak, then fit it by Guassian Curve
-    and give mean squared error.
+    """findpeakl can find domain of a peak, then fit it by Lorenztian Curve
+    and give gama.
     zp: zeropoint
     bottom: Minimum value of independent variable
     top: Maximum value of independent variable
     r:signal to noise ratio
     return peak
-    peak[i][0]: sigma
+    peak[i][0]: gama2
     peak[i][1]: miu
     peak[i][2]: amplitude
     peak[i][3]: mean square error
@@ -192,7 +192,7 @@ def findpeakl(data, zp, noise, bottom, top, r):
                     if absdata[i]>tempmax:
                         tempmax=absdata[i]
                         inma=i
-                    elif absdata[i]<tempmax-noise:
+                    elif absdata[i]<tempmax-noise*r:
                         direction=0
                         fm[fsnum-1].append([inma,inmi])
                         tempmin=absdata[i]
@@ -202,7 +202,7 @@ def findpeakl(data, zp, noise, bottom, top, r):
                     if absdata[i]<tempmin:
                         tempmin=absdata[i]
                         inmi=i
-                    elif absdata[i]>tempmin+noise:
+                    elif absdata[i]>tempmin+noise*r:
                         direction=1
                         tempmax=absdata[i]
                         inma=i
@@ -223,21 +223,21 @@ def findpeakl(data, zp, noise, bottom, top, r):
         j=0
         mod=LorentzianModel(prefix='l1_')
         pars.update(LorentzianModel(prefix='l%i_'%(j+1)).make_params())
-        sigma0=abs(width*(fm[i][j][0]-fm[i][j][1]))*math.sqrt(fm[i][j][0]/fm[i][j][1]-1)
+        sigma0=abs(width*(fm[i][j][0]-fm[i][j][1]))/math.sqrt(absdata[fm[i][j][0]]/absdata[fm[i][j][1]]-1)
         pars['l%i_center'%(j+1)].set(value=bottom+width*fm[i][j][0],min=fsec[i][0],max=fsec[i][-1])
         pars['l%i_sigma'%(j+1)].set(value=sigma0,min=sigma0/20,max=sigma0*20)
-        pars['l%i_amplitude'%(j+1)].set(value=absdata[fm[i][j][0]]*sigma0/0.3183099,min=noise*r,max=absdata[fm[i][j][0]]*20*sigma0/0.3183099)
+        pars['l%i_amplitude'%(j+1)].set(value=absdata[fm[i][j][0]]*sigma0/0.3183099,min=noise*r*sigma0/0.3183099,max=absdata[fm[i][j][0]]*20*sigma0/0.3183099)
         for j in range(1,fnum[i]):
             mod=mod+LorentzianModel(prefix='l%i_'%(j+1))
             pars.update(LorentzianModel(prefix='l%i_'%(j+1)).make_params())
-            sigma0=math.sqrt((width*(fm[i][j][0]-fm[i][j][1]))**2/(2*math.log(absdata[fm[i][j][0]]/absdata[fm[i][j][1]])))
+            sigma0=abs(width*(fm[i][j][0]-fm[i][j][1]))/math.sqrt(absdata[fm[i][j][0]]/absdata[fm[i][j][1]]-1)
             pars['l%i_center'%(j+1)].set(value=bottom+width*fm[i][j][0],min=fsec[i][0],max=fsec[i][-1])
             pars['l%i_sigma'%(j+1)].set(value=sigma0,min=sigma0/20,max=sigma0*20)
-            pars['l%i_amplitude'%(j+1)].set(value=absdata[fm[i][j][0]]*sigma0/0.3183099,min=noise*r,max=absdata[fm[i][j][0]]*20*sigma0/0.3183099)
+            pars['l%i_amplitude'%(j+1)].set(value=absdata[fm[i][j][0]]*sigma0/0.3183099,min=noise*r*sigma0/0.3183099,max=absdata[fm[i][j][0]]*20*sigma0/0.3183099)
         result=mod.fit(fdata[i],pars,x=fsec[i])
         print(result.fit_report())
-        plt.plot(fsec[i],fdata[i],'bo')
-        plt.plot(fsec[i],result.best_fit,'r-')
+        plt.plot(fsec[i],fdata[i],'bo',label='original')
+        plt.plot(fsec[i],result.best_fit,'r-',label='fitting')
         plt.show()
         tempbo=int((fsec[i][0]-bottom)/width)
         tempto=int((fsec[i][-1]-bottom)/width)
