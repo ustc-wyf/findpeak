@@ -63,6 +63,7 @@ def find_peak_2nd(array, line):
                 index.append(i) 
             else:
                 index.append(i+1)
+    return index
     # Find peak from intersection. If the peak between intersection is negative, the peak is selected
     peak_index = []
     for i in range(len(index) - 1):
