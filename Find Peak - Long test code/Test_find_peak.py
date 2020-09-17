@@ -67,11 +67,13 @@ def find_peak_2nd(array, line):
     # Find peak from intersection. If the peak between intersection is negative, the peak is selected
     peak_index = []
     for i in range(len(index) - 1):
-        check_index = int((index[i+1] + index[i])/2)
-        check_value = array[check_index]
-        if check_value < line:
-            peak_index.append(check_index)
-    return peak_index
+        if index[i+1] - index[i] > 1:
+            #check_index = int((index[i+1] + index[i])/2)
+            check_index = index[i] + np.argmin(array[index[i]:index[i+1]])
+            print(index[i], check_index, index[i+1])
+            check_value = array[check_index]
+            if check_value < line:
+                peak_index.append(check_index)
 
 def check_th(array, peak_index ,line):
     peak_index_2nd = []
@@ -81,7 +83,7 @@ def check_th(array, peak_index ,line):
     return peak_index_2nd
 
 #%% Get data
-filename1 = "Pulse_20200831-110833_data.txt"
+filename1 = "Pulse_20200913-162824_data.txt"
 with open(filename1,"r") as r:
     r = r.read().split("\n")
     raw1= json.loads(r[1])
@@ -137,5 +139,5 @@ ax4.plot(data_sm, color = "C0")
 ax4.axhline(th_u, color = "C1")
 for i in range(len(peak_index_user)):
     ax4.scatter(peak_index_user[i], data_sm[peak_index_user[i]])
-
+#%%
         
