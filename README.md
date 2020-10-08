@@ -1,6 +1,10 @@
 # findpeak
 findpeak from data
 
+#mainprogram11:
+1. add an input wf. user can change the width of non-peak region by change this parameter. This parameter is a default number 1 in mainprogram9
+2. add some legends and titles.
+
 #mainprogram9:
 1. can fit multiple peaks in one data window
 2. can find and fit non-peak section automatically
