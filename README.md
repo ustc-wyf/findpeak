@@ -3,6 +3,7 @@ findpeak from data
 
 #mainprogram13:
 1. Fit one maximum with one or two peaks, output the result with lowest chi-square-error.
+2. Because there are more overlapped peaks, mainprogram13 adds "reduced chi-square-error" output of the whole fitting section and "mean square error" in the output is not significant now. We can see clearly that the Gaussian model is better than the Lorentzian model!
 
 #mainprogram12:
 1. Correct output mistakes.
